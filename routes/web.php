@@ -29,7 +29,7 @@ Route::post('/admin/login', [AdminAuthController::class, 'login']);
 Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
 
 Route::get('/admin/dashboard', function () {
-    return 'Admin Dashboard';
+    return Inertia::render('admin/DashboardAdmin');
 })->middleware('auth:admin');
 
 // Event
