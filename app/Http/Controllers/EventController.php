@@ -9,34 +9,31 @@ use Inertia\Response;
 
 class EventController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request)
     {
-        $events = Event::with('organizer')
-        ->latest()
-        ->get()
-        ->map(function ($event){
-            return [
-                'id' => $event->id,
-                'name' => $event->name,
-                'description' => $event->description,
-                'open_event' => $event->open_event,
-                'close_event' => $event->close_event,
-                'organizer' => [
-                    'id' => $event->organizer?->id,
-                    'name' => $event->organizer?->name,
-                    'email' => $event->organizer?->email,
-                ],
+        $events = Event::with('ticket')
+            ->when($request->search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->latest()
+            ->paginate(12)
+            ->through(function ($event) {
+                return [
+                    'id' => $event->id,
+                    'name' => $event->name,
+                    'kategori' => $event->kategori,
+                    'tipe' => $event->tipe,
+                    'organization_maker' => $event->organization_maker,
+                    'price' => $event->ticket?->price ?? 0,
+                ];
+            })
+            ->withQueryString();
 
-                'created_at' => $event->created_at,
-
-            ];
-        });
-
-        return Inertia::render(
-            'event/Index',
-            [
-                'events'=>$events
-            ]
-        );
+        return Inertia::render('Dashboard', [
+            'events' => $events,
+            'filters' => [
+                'search' => $request->search,
+            ],
+        ]);
     }
 }

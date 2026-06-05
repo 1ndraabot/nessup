@@ -75,12 +75,15 @@ export function initializeTheme(): void {
         return;
     }
 
-    // Initialize theme from saved preference or default to system...
-    const savedAppearance = getStoredAppearance();
-    updateTheme(savedAppearance || 'system');
+    document.documentElement.classList.remove('dark');
+    localStorage.setItem('appearance', 'light');
 
-    // Set up system theme change listener...
-    mediaQuery()?.addEventListener('change', handleSystemThemeChange);
+    // Initialize theme from saved preference or default to system...
+    // const savedAppearance = getStoredAppearance();
+    // updateTheme(savedAppearance || 'system');
+
+    // // Set up system theme change listener...
+    // mediaQuery()?.addEventListener('change', handleSystemThemeChange);
 }
 
 const appearance = ref<Appearance>('system');

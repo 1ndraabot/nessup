@@ -1,47 +1,99 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
-import PlaceholderPattern from '@/components/PlaceholderPattern.vue';
-import { dashboard } from '@/routes';
+    import { router } from '@inertiajs/vue3'
+    import { ref, watch } from 'vue'
+    import CardEvent from '@/components/CardEvent.vue';
 
-defineOptions({
-    layout: {
-        breadcrumbs: [
+    const handleDetail = () => {
+        alert('Menuju halaman detail event...');
+    };
+
+    const handleSave = () => {
+        alert('Event berhasil disimpan!');
+    };
+
+    interface Event {
+        id: number
+        name: string
+        description: string
+        kategori: string
+        organization_maker: string
+        tipe: string
+        open_event: string
+        close_event: string
+    }
+
+    const formatPrice = (price: number) => {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0,
+        }).format(price)
+    }
+
+    const props = defineProps<{
+        events?: {
+            data: any[]
+        },
+        filters?: {
+            search?: string
+        }
+    }>()
+
+    const search = ref(props.filters?.search ?? '')
+
+    watch(search, (value) => {
+        router.get(
+            '/dashboard',
+            { search: value },
             {
-                title: 'Dashboard',
-                href: dashboard(),
-            },
-        ],
-    },
-});
+                preserveState: true,
+                replace: true,
+            }
+        )
+    })
+
+    console.log(props)
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <div class="bg-Black-30 min-h-screen text-White">
+        <nav class="bg-Blue flex p-6 justify-between items-center">
+            <div class="flex gap-10 items-center">
+                <h1 class="font-bold text-3xl">NessUp!</h1>
+                <div class="flex gap-5">
+                    <button class="font-semibold text-Yellow text-xl">Beranda</button>
+                    <button class="text-xl">Explore</button>
+                    <button class="text-xl">Tentang</button>
+                </div>
+            </div>
 
-    <div
-        class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
-    >
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+            <h1 class="px-4 py-1 bg-Yellow text-Blue font-semibold rounded">{{ $page.props.auth.user.name }}</h1>
+        </nav>
+
+        <div class="mt-10 flex justify-center">
+            <input v-model="search" type="text" placeholder="Search..." class="px-5 py-3 rounder-lg min-w-2xl rounded-lg border border-Black-40 text-Blue placeholder:text-gray-500" />
+
             <div
-                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
+            v-for="event in events?.data ?? []"
+            :key="event.id"
             >
-                <PlaceholderPattern />
-            </div>
-            <div
-                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-            >
-                <PlaceholderPattern />
-            </div>
-            <div
-                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-            >
-                <PlaceholderPattern />
+                <h2>{{ event.name }}</h2>
+                <p>{{ event.organization_maker }}</p>
             </div>
         </div>
-        <div
-            class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border"
-        >
-            <PlaceholderPattern />
+
+        <div class="p-10 text-Black">
+            <CardEvent
+                v-for="event in events?.data ?? []"
+                :key="event.id"
+                :title="event.name"
+                :category="event.kategori"
+                :type="event.tipe"
+                :organizer="event.organization_maker"
+                :price="formatPrice(event.price)"
+                @details="handleDetail(event.id)"
+                @save="handleSave(event.id)"
+            />
         </div>
     </div>
 </template>

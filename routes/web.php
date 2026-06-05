@@ -13,7 +13,10 @@ Route::inertia('/', 'Welcome', [
 ])->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'Dashboard')->name('dashboard');
+    Route::get(
+        '/dashboard',
+        [EventController::class, 'index']
+    )->name('dashboard');
 });
 
 // Login/Register User
@@ -44,10 +47,9 @@ Route::patch(
     [AdminDashboardController::class, 'decline']
 );
 
-
-// Event
-Route::get('/event', [EventController::class, 'index']
-)->name('event.index');
+// Dashboard User
+Route::get('/events', [EventController::class, 'index'])
+    ->name('events.index');
 
 
 

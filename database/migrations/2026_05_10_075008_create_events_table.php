@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
+            $table->enum('kategori', ['seminar', 'workshop', 'kompetisi', 'webinar']);
+            $table->string('organization_maker');
+            $table->enum('tipe', ['online', 'offline']);
             $table->dateTime('open_event');
             $table->dateTime('close_event');
             $table->foreignId('organizer_id')
