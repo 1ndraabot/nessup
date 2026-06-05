@@ -5,6 +5,7 @@ use Laravel\Fortify\Features;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\AdminDashboardController;
 use Inertia\Inertia;
 
 Route::inertia('/', 'Welcome', [
@@ -28,9 +29,21 @@ Route::get('/admin/login', [AdminAuthController::class, 'showLogin']);
 Route::post('/admin/login', [AdminAuthController::class, 'login']);
 Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
 
-Route::get('/admin/dashboard', function () {
-    return Inertia::render('admin/DashboardAdmin');
-})->middleware('auth:admin');
+
+// Dashboard Admin
+Route::get(
+    '/admin/dashboard',
+    [AdminDashboardController::class, 'index']
+)->middleware('auth:admin');
+Route::patch(
+    '/admin/event-submission/{id}/approve', 
+    [AdminDashboardController::class, 'approve']
+);
+Route::patch(
+    '/admin/event-submission/{id}/decline', 
+    [AdminDashboardController::class, 'decline']
+);
+
 
 // Event
 Route::get('/event', [EventController::class, 'index']

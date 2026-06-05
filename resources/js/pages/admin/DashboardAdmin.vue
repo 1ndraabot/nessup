@@ -1,8 +1,34 @@
 <script setup lang="ts">
+    import { router } from '@inertiajs/vue3'
+
+    interface EventSubmission{
+        id: number
+        name: string
+        description: string
+        open_event: string
+        close_event: string
+        price_ticket: number
+        status: string
+    }
+
+    defineProps<{
+        pendingEvents: EventSubmission[]
+        pendingCount: number
+    }>()
+
+    const approveEvent = (id: number) => {
+        router.patch(
+            `admin/event-submission/${id}/approve`
+        )
+    }
+
+    const declineEvent = (id: number) => {
+        router.patch(
+            `admin/event-submission/${id}/decline`
+        )
+    }
 </script>
 
-<script setup lang="ts">
-</script>
 
 <template>
     <div class="bg-Black-30 min-h-screen">
@@ -31,7 +57,7 @@
                 <div class="flex gap-10 text-Blue1 justify-between w-full px-20">
                     <div class="border border-Black-40 bg-White py-4 px-6 rounded-md text-end flex flex-col gap-2">
                         <h5 class="font-semibold opacity-50">Menunggu Review</h5>
-                        <h2 class="font-medium text-4xl">8</h2>
+                        <h2 class="font-medium text-4xl">{{ pendingCount }}</h2>
                     </div>
                     <div class="border border-Black-40 bg-White py-4 px-6 rounded-md text-end flex flex-col gap-2">
                         <h5 class="font-semibold opacity-50">Total Event Aktif</h5>
@@ -52,85 +78,31 @@
                     </div>
 
                     <div class="flex flex-col gap-4">
-                        <div class="p-5 border border-Black-40 bg-Black-30 flex gap-5 justify-between items-center">
+                        <div 
+                        v-for="event in pendingEvents"
+                        :key="event.id"
+                        class="p-5 border border-Black-40 bg-Black-30 flex gap-5 justify-between items-center">
                             <div>
                                 <img>
                                 
                                 <div>
-                                    <h3>Nama Event</h3>
-                                    <p>Organizer</p>
-                                    <p>Onlne/off - gratis</p>
+                                    <h3>{{ event.name }}</h3>
+                                    <p>Rp {{ Number(event.price_ticket).toLocaleString('id-ID') }}</p>
+                                    <p>{{ event.open_event }} - {{ event.close_event }}</p>
                                 </div>
                             </div>
 
                             <div class="flex gap-1 h-fit">
-                                <div class="px-5 py-1 border border-Green bg-Green2 rounded">
+                                <button 
+                                @click="approveEvent(event.id)"
+                                class="px-5 py-1 border border-Green bg-Green2 rounded">
                                     <p class="text-Green">Setujui</p>
-                                </div>
-                                <div class="px-5 py-1 border border-Red bg-Red2 rounded">
+                                </button>
+                                <button 
+                                @click="declineEvent(event.id)"
+                                class="px-5 py-1 border border-Red bg-Red2 rounded">
                                     <p class="text-Red">Tolak</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="p-5 border border-Black-40 bg-Black-30 flex gap-5 justify-between items-center">
-                            <div>
-                                <img>
-                                
-                                <div>
-                                    <h3>Nama Event</h3>
-                                    <p>Organizer</p>
-                                    <p>Onlne/off - gratis</p>
-                                </div>
-                            </div>
-
-                            <div class="flex gap-1 h-fit">
-                                <div class="px-5 py-1 border border-Green bg-Green2 rounded">
-                                    <p class="text-Green">Setujui</p>
-                                </div>
-                                <div class="px-5 py-1 border border-Red bg-Red2 rounded">
-                                    <p class="text-Red">Tolak</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-5 border border-Black-40 bg-Black-30 flex gap-5 justify-between items-center">
-                            <div>
-                                <img>
-                                
-                                <div>
-                                    <h3>Nama Event</h3>
-                                    <p>Organizer</p>
-                                    <p>Onlne/off - gratis</p>
-                                </div>
-                            </div>
-
-                            <div class="flex gap-1 h-fit">
-                                <div class="px-5 py-1 border border-Green bg-Green2 rounded">
-                                    <p class="text-Green">Setujui</p>
-                                </div>
-                                <div class="px-5 py-1 border border-Red bg-Red2 rounded">
-                                    <p class="text-Red">Tolak</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-5 border border-Black-40 bg-Black-30 flex gap-5 justify-between items-center">
-                            <div>
-                                <img>
-                                
-                                <div>
-                                    <h3>Nama Event</h3>
-                                    <p>Organizer</p>
-                                    <p>Onlne/off - gratis</p>
-                                </div>
-                            </div>
-
-                            <div class="flex gap-1 h-fit">
-                                <div class="px-5 py-1 border border-Green bg-Green2 rounded">
-                                    <p class="text-Green">Setujui</p>
-                                </div>
-                                <div class="px-5 py-1 border border-Red bg-Red2 rounded">
-                                    <p class="text-Red">Tolak</p>
-                                </div>
+                                </button>
                             </div>
                         </div>
                     </div>
