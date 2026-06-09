@@ -134,6 +134,23 @@ Route::middleware('auth')->group(function () {
     )->name('bookmarks.destroy');
 });
 
+//test
+Route::get('/test-db', function () {
+    try {
+        DB::connection()->getPdo();
+
+        return response()->json([
+            'success' => true,
+            'database' => DB::connection()->getDatabaseName(),
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+        ]);
+    }
+});
+
 
 
 require __DIR__.'/settings.php';
