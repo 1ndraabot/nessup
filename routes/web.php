@@ -142,6 +142,20 @@ Route::get('/debug-app', function () {
     ];
 });
 
+Route::get('/debug-user', function () {
+    try {
+        return [
+            'db_connected' => true,
+            'user_count' => User::count(),
+            'first_user' => User::first()?->email,
+        ];
+    } catch (\Exception $e) {
+        return [
+            'db_connected' => false,
+            'error' => $e->getMessage(),
+        ];
+    }
+});
 
 
 require __DIR__.'/settings.php';
