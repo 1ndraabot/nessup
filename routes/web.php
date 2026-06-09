@@ -163,5 +163,14 @@ Route::get('/debug-user', function () {
     }
 });
 
+Route::get('/db-config', function () {
+    return [
+        'host' => env('DB_HOST'),
+        'port' => env('DB_PORT'),
+        'database' => env('DB_DATABASE'),
+        'username' => env('DB_USERNAME'),
+    ];
+});
+
 
 require __DIR__.'/settings.php';
