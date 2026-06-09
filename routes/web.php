@@ -143,17 +143,23 @@ Route::get('/debug-app', function () {
 });
 
 Route::get('/debug-user', function () {
+
     try {
+
+        $pdo = DB::connection()->getPdo();
+
         return [
-            'db_connected' => true,
-            'user_count' => User::count(),
-            'first_user' => User::first()?->email,
+            'connected' => true,
+            'database' => DB::connection()->getDatabaseName(),
         ];
-    } catch (\Exception $e) {
-        return [
-            'db_connected' => false,
+
+    } catch (\Throwable $e) {
+
+        return response()->json([
+            'connected' => false,
             'error' => $e->getMessage(),
-        ];
+            'class' => get_class($e),
+        ]);
     }
 });
 
