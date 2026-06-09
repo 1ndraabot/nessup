@@ -135,20 +135,11 @@ Route::middleware('auth')->group(function () {
 });
 
 //test
-Route::get('/test-db', function () {
-    try {
-        DB::connection()->getPdo();
-
-        return response()->json([
-            'success' => true,
-            'database' => DB::connection()->getDatabaseName(),
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'error' => $e->getMessage(),
-        ]);
-    }
+Route::get('/debug-app', function () {
+    return [
+        'app_key' => !empty(config('app.key')),
+        'session_driver' => config('session.driver'),
+    ];
 });
 
 
