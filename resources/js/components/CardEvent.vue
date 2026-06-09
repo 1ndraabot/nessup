@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button } from './ui/button';
+
     defineProps ({
         image: {type: String, default: null},
         title: {type: String, required: true},
@@ -12,8 +14,8 @@
 </script>
 
 <template>
-    <div class="max-w-sm rounded-2xl overflow-hidden bg-White border border-Black-40 flex flex-col gap-5 text-Black p-4">
-        <img v-if="image" :src="image" :alt="title" class="w-full h-full object-cover">
+    <div class="w-full rounded-2xl overflow-hidden bg-White border border-Black-40 flex flex-col gap-5 text-Black p-4">
+        <img v-if="image" :src="image" :alt="title" class="w-full h-48 rounded-xl object-cover">
 
         <div class="flex gap-3">
             <span class="px-4 py-0.5 bg-Blue2 text-Blue font-medium rounded-full">{{ category }}</span>
@@ -26,13 +28,14 @@
             <p>{{ organizer }}</p>
         </div>
 
-        <div class="flex gap-5">
-            <button @click="$emit('details')" class="w-full px-4 py-2 border border-Blue text-Blue rounded-md">
+        <div class="flex gap-5 max-w-full">
+            <Button @click="$emit('details')" class="flex-1 px-4 py-2 font-medium border-2 bg-white border-Sky-Blue text-Sky-Blue rounded-md hover:bg-Sky-Blue hover:text-White hover:underline">
                 Lihat Detail
-            </button>
-            <button @click="$emit('save')" class="w-full px-4 py-2 rounded-md bg-Blue font-bold text-white">
+            </Button>
+            
+            <Button @click="$emit('save')" class="flex-1 px-4 py-2 rounded-md bg-Sky-Blue font-bold text-white hover:bg-Yellow hover:text-Sky-Blue">
                 Simpan
-            </button>
+            </Button>
         </div>
     </div>
 </template>

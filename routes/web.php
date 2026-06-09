@@ -4,8 +4,13 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventSubmissionController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\ExploreController;
+use App\Http\Controllers\ModerasiEventController;
+use App\Http\Controllers\EventRegistrationController;
+use App\Http\Controllers\EventBookmarkController;
 use Inertia\Inertia;
 
 Route::inertia('/', 'Welcome', [
@@ -33,23 +38,101 @@ Route::post('/admin/login', [AdminAuthController::class, 'login']);
 Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
 
 
-// Dashboard Admin
-Route::get(
-    '/admin/dashboard',
-    [AdminDashboardController::class, 'index']
-)->middleware('auth:admin');
-Route::patch(
-    '/admin/event-submission/{id}/approve', 
-    [AdminDashboardController::class, 'approve']
-);
-Route::patch(
-    '/admin/event-submission/{id}/decline', 
-    [AdminDashboardController::class, 'decline']
-);
+Route::middleware('auth:admin')->group(function () {
 
-// Dashboard User
+    // Dashboard Admin
+    Route::get(
+        '/admin/dashboard',
+        [AdminDashboardController::class, 'index']
+    );
+
+    // Moderasi Event
+    Route::get(
+        '/admin/moderasi-event',
+        [AdminDashboardController::class, 'moderasi']
+    );
+
+    Route::get(
+        '/admin/event-submission/{id}',
+        [ModerasiEventController::class, 'show']
+    );
+
+    Route::patch(
+        '/admin/event-submission/{id}/approve',
+        [ModerasiEventController::class, 'approve']
+    );
+
+    Route::patch(
+        '/admin/event-submission/{id}/decline',
+        [ModerasiEventController::class, 'decline']
+    );
+
+    // Semua Event
+    Route::get(
+        '/admin/events',
+        [EventController::class, 'allEvents']
+    )->name('admin.events');
+
+    Route::delete(
+        '/admin/events/{event}',
+        [EventController::class, 'destroy']
+    )->name('admin.events.destroy');
+});
+
+// Dashboard User   
 Route::get('/events', [EventController::class, 'index'])
     ->name('events.index');
+    
+// Explore Page
+Route::get('/explore', [ExploreController::class, 'index'])
+    ->name('explore.index');
+
+Route::get('/explore/{event}', [ExploreController::class, 'show'])
+    ->name('explore.show');
+
+// Post Event
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    Route::get(
+        '/post-event',
+        [EventSubmissionController::class, 'create']
+    )->name('event.create');
+
+    Route::post(
+        '/post-event',
+        [EventSubmissionController::class, 'store']
+    )->name('event.store');
+
+});
+
+// Form Pendaftaran User
+Route::get(
+    '/event/{event}/daftar',
+    [EventRegistrationController::class, 'create']
+)->name('event.register');
+Route::post(
+    '/event/{event}/daftar',
+    [EventRegistrationController::class, 'store']
+)->name('event.daftar');
+
+// Event Bookmark
+Route::middleware('auth')->group(function () {
+
+    Route::get(
+        '/event-saya',
+        [EventBookmarkController::class, 'index']
+    )->name('bookmarks.index');
+
+    Route::post(
+        '/bookmarks',
+        [EventBookmarkController::class, 'store']
+    )->name('bookmarks.store');
+
+    Route::delete(
+        '/bookmarks/{bookmark}',
+        [EventBookmarkController::class, 'destroy']
+    )->name('bookmarks.destroy');
+});
 
 
 

@@ -1,7 +1,42 @@
-<template>
-    <div class="min-h-screen bg-slate-100 flex items-center justify-center px-4">
+<script setup lang="ts">
 
-        <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+import { useForm } from '@inertiajs/vue3'
+import { ref } from "vue";
+import InputError from '@/components/InputError.vue'
+import PasswordInput from "@/components/PasswordInput.vue";
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+
+
+const successMessage = ref("");
+
+const form = useForm({
+    name: "",
+    email: "",
+    number_phone: "",
+    password: "",
+    password_confirmation: "",
+});
+
+const handleRegister = () => {
+    successMessage.value = ''
+
+    form.post('/register', {
+        onSuccess: () => {
+            successMessage.value = 'Register Success'
+
+            form.reset()
+
+        }
+    })
+}
+</script>
+
+<template>
+    <div class="min-h-screen bg-slate-100 flex items-center justify-center p-20">
+
+        <div class="w-screen bg-white rounded-2xl shadow-lg p-8">
 
             <div class="mb-8">
                 <h1 class="text-3xl font-bold text-slate-900">
@@ -16,77 +51,88 @@
             <form @submit.prevent="handleRegister" class="space-y-5">
 
                 <div>
-                    <label class="block mb-2 font-medium text-slate-700">
+                    <Label class="block mb-2 font-medium text-slate-700">
                         Name
-                    </label>
+                    </Label>
 
-                    <input
+                    <Input
                         v-model="form.name"
                         type="text"
                         placeholder="Enter your name"
                         class="w-full px-4 py-3 border border-slate-300 rounded-xl text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
                     />
+
+                    <InputError :message="form.errors.name" />
                 </div>
 
                 <div>
-                    <label class="block mb-2 font-medium text-slate-700">
+                    <Label class="block mb-2 font-medium text-slate-700">
                         Email
-                    </label>
+                    </Label>
 
-                    <input
+                    <Input
                         v-model="form.email"
                         type="email"
                         placeholder="Enter your email"
                         class="w-full px-4 py-3 border border-slate-300 rounded-xl text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
                     />
+
+                    <InputError :message="form.errors.email" />
                 </div>
 
                 <div>
-                    <label class="block mb-2 font-medium text-slate-700">
+                    <Label class="block mb-2 font-medium text-slate-700">
                         Phone Number
-                    </label>
+                    </Label>
 
-                    <input
+                    <Input
                         v-model="form.number_phone"
                         type="text"
                         placeholder="Enter your phone number"
                         class="w-full px-4 py-3 border border-slate-300 rounded-xl text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
                     />
+
+                    <InputError :message="form.errors.number_phone" />
                 </div>
 
                 <div>
-                    <label class="block mb-2 font-medium text-slate-700">
+                    <Label class="block mb-2 font-medium text-slate-700">
                         Password
-                    </label>
+                    </Label>
 
-                    <input
+                    <PasswordInput
                         v-model="form.password"
-                        type="password"
+                        required
+                        :tab-index="2"
+                        auto-complete="current-password"
                         placeholder="Enter password"
                         class="w-full px-4 py-3 border border-slate-300 rounded-xl text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
                     />
+
+                    <InputError :message="form.errors.password" />
                 </div>
 
                 <div>
-                    <label class="block mb-2 font-medium text-slate-700">
+                    <Label class="block mb-2 font-medium text-slate-700">
                         Confirm Password
-                    </label>
+                    </Label>
 
-                    <input
+                    <PasswordInput
                         v-model="form.password_confirmation"
-                        type="password"
                         placeholder="Confirm password"
                         class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
+
+                    <InputError :message="form.errors.password_confirmation" />
                 </div>
 
-                <button
+                <Button
                     type="submit"
-                    :disabled="loading"
-                    class="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition disabled:bg-slate-400 disabled:cursor-not-allowed"
+                    :disabled="form.processing"
+                    class="w-full py-6 text-md rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition disabled:bg-slate-400 disabled:cursor-not-allowed"
                 >
-                    {{ loading ? 'Loading...' : 'Register' }}
-                </button>
+                    {{ form.processing ? 'Loading...' : 'Register' }}
+                </Button>
 
             </form>
 
@@ -96,21 +142,7 @@
             >
                 {{ successMessage }}
             </div>
-
-            <div
-                v-if="errors.length"
-                class="mt-6 p-4 rounded-xl bg-red-100 text-red-700"
-            >
-                <ul class="list-disc pl-5 space-y-1">
-                    <li
-                        v-for="(error, index) in errors"
-                        :key="index"
-                    >
-                        {{ error }}
-                    </li>
-                </ul>
-            </div>
-
+            
             <div class="mt-6 text-center text-sm text-slate-500">
                 Already have an account?
 
@@ -127,78 +159,3 @@
     </div>
 </template>
 
-<script setup lang="ts">
-
-import { router } from "@inertiajs/vue3";
-
-import { reactive, ref } from "vue";
-interface RegisterForm {
-    name: string;
-    email: string;
-    number_phone: string;
-    password: string;
-    password_confirmation: string;
-}
-
-
-const loading = ref(false);
-
-const errors = ref<string[]>([]);
-
-const successMessage = ref("");
-
-const form = reactive<RegisterForm>({
-    name: "",
-    email: "",
-    number_phone: "",
-    password: "",
-    password_confirmation: "",
-});
-
-const resetForm = (): void => {
-    form.name = "";
-    form.email = "";
-    form.number_phone = "";
-    form.password = "";
-    form.password_confirmation = "";
-};
-
-const handleRegister = async (): Promise<void> => {
-
-    loading.value = true;
-
-    errors.value = [];
-
-    successMessage.value = "";
-
-    router.post('/register', form, {
-
-        onSuccess: () => {
-
-            successMessage.value = "Register Success";
-
-            resetForm();
-
-            loading.value = false;
-
-        },
-
-        onError: (validationErrors) => {
-
-            Object.values(validationErrors).forEach((error) => {
-
-                if (Array.isArray(error)) {
-                    errors.value.push(error[0]);
-                } else {
-                    errors.value.push(String(error));
-                }
-
-            });
-
-            loading.value = false;
-        }
-
-    });
-
-};
-</script>

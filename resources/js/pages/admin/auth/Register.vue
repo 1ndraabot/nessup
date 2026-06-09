@@ -66,7 +66,7 @@ const submit = () => {
 
                 <button
                     type="submit"
-                    class="w-full bg-green-600 text-white py-3 rounded"
+                    class="w-full font-semibold bg-Sky-Blue text-white py-3 rounded hover:bg-Yellow hover:text-Sky-Blue"
                 >
                     Register
                 </button>

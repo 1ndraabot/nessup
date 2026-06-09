@@ -40,4 +40,9 @@ class User extends Authenticatable
             'organizer_id'
         );
     }
+
+    public function bookmarks(): HasMany
+    {
+        return $this->hasMany(EventBookmark::class);
+    }
 }

@@ -22,26 +22,36 @@ const submit = () => {
 
             <form @submit.prevent="submit">
 
-                <input
-                    v-model="form.email"
-                    type="email"
-                    placeholder="Email"
-                    class="w-full border p-3 rounded mb-4"
-                >
-
-                <input
-                    v-model="form.password"
-                    type="password"
-                    placeholder="Password"
-                    class="w-full border p-3 rounded mb-4"
-                >
-
-                <button
-                    type="submit"
-                    class="w-full bg-blue-600 text-white py-3 rounded"
-                >
-                    Login
-                </button>
+                <div class="w-full flex flex-col justify-center gap-2">
+                    <div>
+                        <label for="email">Email</label>
+                        <input
+                            v-model="form.email"
+                            type="email"
+                            placeholder="Email"
+                            class="w-full border p-3 rounded mb-4"
+                        >
+                    </div>
+    
+                    <div>
+                        <label for="password">Password</label>
+                        <input
+                            v-model="form.password"
+                            type="password"
+                            placeholder="Password"
+                            class="w-full border p-3 rounded mb-4"
+                        >
+                    </div>
+    
+                    <button
+                        type="submit"
+                        class="w-full bg-blue-600 text-white font-semibold py-3 rounded hover:bg-Yellow hover:text-Sky-Blue"
+                    >
+                        Login
+                    </button>
+    
+                    <a href="/admin/register" class="ml-24">Don't have an account?</a>
+                </div>
 
             </form>
 
