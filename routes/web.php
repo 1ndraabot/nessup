@@ -172,5 +172,11 @@ Route::get('/db-config', function () {
     ];
 });
 
+Route::get('/health', function () {
+    return response()->json([
+        'ok' => true
+    ]);
+});
+
 
 require __DIR__.'/settings.php';
