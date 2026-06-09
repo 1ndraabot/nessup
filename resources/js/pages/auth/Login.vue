@@ -79,7 +79,8 @@ defineProps<{
                 <p class="opacity-80">Masuk ke akun NessUp! kamu</p>
             </div>
             <Form
-                v-bind="store.form()"
+                action="/login"
+                method="post"
                 :reset-on-success="['password']"
                 v-slot="{ errors, processing }"
                 class="flex flex-col gap-6"
