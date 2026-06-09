@@ -14,7 +14,7 @@
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
-        "APP_URL": "https://nessup.vercel.app/",
+        "APP_URL": "https://nessup-dv9jw99gb-ndrzz-s-projects.vercel.app/",
         "APP_KEY": "base64:J1q8rvhsEQYrlGjL5lvSiUUOoCtyG39dlmJm+CwG9sM=",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
